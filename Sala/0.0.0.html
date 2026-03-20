@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lotería Ranchera</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Fredoka One',cursive;}
+body{min-height:100vh;background:#5D3A1A;background-image:radial-gradient(circle,#8B5A2B 10%,#5D3A1A 80%);display:flex;justify-content:center;align-items:flex-start;padding:20px;}
+.card{background:linear-gradient(165deg,#C4A484 0%,#DEB887 70%,#F4E4C1 100%);border-radius:30px 30px 40px 40px;padding:35px 25px 30px;box-shadow:0 20px 0 #5D3A1A,0 30px 30px rgba(0,0,0,.5),inset 0 2px 10px rgba(255,215,140,.5);border:6px solid #A67B5B;position:relative;max-width:1400px;width:100%;}
+.card::after{content:"";position:absolute;top:10px;left:10px;right:10px;bottom:10px;border:2px dashed #8B5A2B;border-radius:20px;pointer-events:none;opacity:.3;}
+.header-rancho{text-align:center;margin-bottom:25px;background:#A0522D;padding:15px 10px;border-radius:60px 60px 20px 20px;border:4px solid #6B3E1F;box-shadow:inset 0 -4px 0 #4A2C1A,0 6px 0 #3B2618;color:#F4E4C1;text-transform:uppercase;letter-spacing:3px;}
+.header-rancho h2{font-size:2rem;text-shadow:3px 3px 0 #4A2C1A;}
+.header-rancho p{font-size:1.1rem;background:#6B3E1F;display:inline-block;padding:5px 25px;border-radius:30px;border:2px solid #C4A484;margin-top:5px;}
+.rancho-input{width:100%;padding:14px 20px;border:5px solid #8B5A2B;border-radius:60px;font-size:1.1rem;font-family:'Fredoka One',cursive;background:#FDF5E6;box-shadow:inset 0 3px 8px #A67B5B,0 6px 0 #5D3A1A;color:#3E2B1B;transition:all .1s;margin-bottom:12px;}
+.rancho-input:focus{outline:none;border-color:#CD853F;box-shadow:inset 0 3px 8px #A67B5B,0 6px 0 #8B4513,0 0 15px #E6B422;transform:translateY(-2px);}
+.rancho-input::placeholder{color:#A67B5B;font-style:italic;}
+.btn-rancho{width:100%;padding:15px;background:#B22222;border:5px solid #E6B422;border-radius:60px;font-family:'Fredoka One',cursive;font-size:1.4rem;color:#E6B422;text-shadow:2px 2px 0 #5D3A1A;box-shadow:0 8px 0 #5D3A1A,0 12px 18px #2C1E0F;cursor:pointer;transition:all .08s linear;margin:8px 0;display:flex;align-items:center;justify-content:center;gap:12px;letter-spacing:2px;}
+.btn-rancho:active{transform:translateY(5px);box-shadow:0 3px 0 #5D3A1A;}
+.btn-rancho:disabled{opacity:.5;transform:translateY(3px);box-shadow:0 5px 0 #5D3A1A;cursor:not-allowed;}
+.btn-small{font-size:1.1rem;padding:11px;}
+.btn-verde{background:#2E8B57;}
+.btn-dorado{background:#B8860B;}
+.btn-gris{background:#555;border-color:#999;}
+.footer-ranch{display:flex;justify-content:center;gap:25px;color:#E6B422;font-size:1.8rem;background:#8B5A2B;padding:15px 10px;border-radius:40px;border:3px solid #E6B422;margin-top:20px;box-shadow:inset 0 -4px 0 #5D3A1A;}
+.lazo{position:absolute;top:-15px;right:20px;font-size:2.5rem;color:#CD853F;transform:rotate(15deg);opacity:.6;}
+.seccion-titulo{color:#5D3A1A;text-align:center;margin-bottom:15px;font-size:1.4rem;background:#E6B422;padding:10px;border-radius:30px;border:3px solid #8B5A2B;}
+.modo-selector{display:flex;gap:15px;justify-content:center;margin:25px 0;flex-wrap:wrap;}
+.modo-btn{flex:1;min-width:200px;font-size:1.7rem;padding:22px 10px;}
+.seleccion-cartas-unica{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:15px 0;max-height:460px;overflow-y:auto;padding:10px;background:rgba(93,58,26,.2);border-radius:20px;border:3px solid #8B5A2B;}
+.carta-item-unica{background:#FDF5E6;border:5px solid #8B5A2B;border-radius:15px;padding:10px;cursor:pointer;transition:all .2s;box-shadow:0 6px 0 #5D3A1A;width:162px;text-align:center;position:relative;}
+.carta-item-unica:hover{transform:translateY(-3px);box-shadow:0 9px 0 #5D3A1A;}
+.carta-item-unica.seleccionada{border-color:#E6B422;transform:translateY(-5px);box-shadow:0 11px 0 #5D3A1A,0 0 20px #E6B422;background:#FFF8DC;}
+.carta-item-unica.ocupada{opacity:.38;cursor:not-allowed;pointer-events:none;filter:grayscale(.5);}
+.carta-item-unica.ocupada .carta-numero{color:#888;}
+.carta-ocupada-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(178,34,34,.92);color:#fff;padding:4px 10px;border-radius:10px;font-size:.75rem;white-space:nowrap;}
+.carta-numero{font-size:1.8rem;color:#B22222;font-weight:bold;display:block;margin-bottom:3px;}
+.carta-mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:6px;}
+.carta-mini-cell{background:#A67B5B;color:#FDF5E6;padding:3px 1px;border-radius:3px;font-size:.52rem;text-align:center;border:1px solid #E6B422;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sala-info{background:#8B5A2B;padding:15px 20px;border-radius:30px;border:3px solid #E6B422;margin:12px 0;color:#FDF5E6;font-size:1.1rem;line-height:2;}
+.jugadores-lista{max-height:220px;overflow-y:auto;margin:12px 0;}
+.jugador-item{background:#5D3A1A;padding:10px 15px;margin:5px 0;border-radius:30px;display:flex;justify-content:space-between;align-items:center;color:#E6B422;border:2px solid #E6B422;}
+.jugador-item.listo{border-color:#2E8B57;background:#1a4a2e;}
+.token-badge{background:#E6B422;color:#5D3A1A;padding:3px 10px;border-radius:20px;font-size:.85rem;}
+.badge-listo{background:#2E8B57;color:#fff;}
+.flex-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.flex-center{justify-content:center;}
+.popup{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.78);display:flex;justify-content:center;align-items:center;z-index:1000;}
+.popup-contenido{background:linear-gradient(165deg,#C4A484 0%,#DEB887 70%,#F4E4C1 100%);padding:30px 28px;border-radius:40px;border:8px solid #E6B422;max-width:460px;width:92%;position:relative;animation:aparecer .3s;box-shadow:0 18px 0 #5D3A1A;}
+.popup-titulo{color:#5D3A1A;font-size:1.7rem;text-align:center;margin-bottom:18px;text-transform:uppercase;}
+.close-popup{position:absolute;top:14px;right:14px;font-size:1.4rem;color:#B22222;cursor:pointer;background:#FDF5E6;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #8B5A2B;}
+.token-display{background:#5D3A1A;color:#E6B422;padding:12px 20px;border-radius:30px;border:3px solid #E6B422;margin:8px 0 14px;font-size:1.5rem;text-align:center;letter-spacing:4px;}
+.juego-top{background:#8B5A2B;padding:12px 15px;border-radius:30px;border:3px solid #E6B422;margin-bottom:10px;color:#FDF5E6;display:flex;align-items:center;gap:15px;flex-wrap:wrap;justify-content:center;}
+.carta-actual-grande{background:#B22222;color:#E6B422;font-size:1.7rem;text-align:center;padding:16px 28px;border-radius:60px;border:5px solid #E6B422;flex:1;min-width:200px;text-transform:uppercase;letter-spacing:3px;}
+.control-juego{display:flex;gap:10px;justify-content:center;margin:10px 0;flex-wrap:wrap;}
+.control-juego .btn-rancho{width:auto;flex:1;max-width:220px;}
+.historial-scroll{background:#8B5A2B;padding:8px 14px;border-radius:25px;margin:8px 0;max-height:90px;overflow-y:auto;border:3px solid #E6B422;}
+.historial-item{background:#5D3A1A;color:#E6B422;padding:3px 10px;border-radius:18px;display:inline-block;margin:2px;border:1px solid #E6B422;font-size:.85rem;}
+.historial-item.actual{background:#B22222;font-weight:bold;border-color:#FFD700;}
+.grid-cartas-jugadores{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin:12px 0;}
+/* MI CARTA — grande y destacada */
+.carta-jugador{background:#FDF5E6;border:5px solid #8B5A2B;border-radius:20px;padding:14px;box-shadow:0 7px 0 #5D3A1A;}
+.carta-jugador.mi-carta{background:linear-gradient(160deg,#FFFDE7 0%,#FFF8DC 100%);border:6px solid #E6B422;box-shadow:0 8px 0 #B8860B,0 0 25px rgba(230,180,34,.4);position:relative;}
+.carta-jugador.mi-carta::before{content:"⭐ TU CARTA";position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#B22222;color:#E6B422;padding:3px 18px;border-radius:20px;font-size:.85rem;border:3px solid #E6B422;white-space:nowrap;letter-spacing:1px;}
+.carta-jugador.ganador-carta{border-color:#FFD700;box-shadow:0 7px 0 #B8860B,0 0 30px #FFD700;animation:parpadeo .5s infinite;}
+.carta-titulo{font-size:1.3rem;color:#B22222;text-align:center;margin-bottom:5px;text-transform:uppercase;}
+.carta-subtitulo{text-align:center;font-size:.85rem;color:#8B5A2B;margin-bottom:8px;}
+.grid-loteria{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+/* Celda con imagen — proporción cuadrada limpia */
+.grid-cell{background:#A67B5B;border-radius:10px;border:3px solid #8B5A2B;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;cursor:default;user-select:none;overflow:hidden;position:relative;padding:0;}
+.grid-cell img{width:100%;aspect-ratio:1/1;object-fit:contain;object-position:center;display:block;background:#FDF5E6;}
+.grid-cell .cell-label{font-size:.6rem;padding:2px 1px 3px;line-height:1.1;text-align:center;width:100%;color:#FDF5E6;background:#8B5A2B;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.grid-cell.clickable{cursor:pointer;border-color:#E6B422;box-shadow:0 0 8px rgba(230,180,34,.7);}
+.grid-cell.clickable:hover{transform:scale(1.07);z-index:2;box-shadow:0 0 16px #E6B422;}
+/* Ficha roja — cubre la imagen al marcar */
+.grid-cell.marked::before{content:"";position:absolute;inset:0;background:rgba(178,34,34,.72);border-radius:8px;z-index:1;}
+.grid-cell.marked::after{content:"????";position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:2rem;z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));}
+.grid-cell.marked .cell-label{position:relative;z-index:3;background:#8B0000;font-weight:bold;}
+.grid-cell.winner-cell{border-color:#FFD700!important;box-shadow:0 0 18px #FFD700!important;animation:parpadeo .4s infinite;}
+.grid-cell.winner-cell::before{background:rgba(100,0,0,.6)!important;}
+.grid-cell.winner-cell::after{content:"????"!important;font-size:1.8rem!important;}
+/* Mini grid selector — imagen cuadrada completa */
+.carta-mini-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:6px;}
+.carta-mini-cell{background:#FDF5E6;border-radius:3px;border:1px solid #8B5A2B;overflow:hidden;aspect-ratio:1;}
+.carta-mini-cell img{width:100%;height:100%;object-fit:contain;object-position:center;display:block;background:#FDF5E6;}
+/* Carta actual grande */
+.carta-actual-grande{background:#B22222;color:#E6B422;text-align:center;padding:10px;border-radius:20px;border:5px solid #E6B422;flex:1;min-width:180px;max-width:300px;text-transform:uppercase;letter-spacing:2px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.carta-actual-grande img{width:140px;height:140px;object-fit:contain;object-position:center;border-radius:12px;border:4px solid #E6B422;background:#FDF5E6;box-shadow:0 4px 15px rgba(0,0,0,.5);}
+.carta-actual-grande .carta-nombre{font-size:1.4rem;text-shadow:2px 2px 0 #5D3A1A;}
+.ganador-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.88);display:flex;justify-content:center;align-items:center;z-index:2000;}
+.ganador-contenido{background:linear-gradient(165deg,#C4A484 0%,#DEB887 70%,#F4E4C1 100%);padding:45px 38px;border-radius:40px;border:10px solid #E6B422;max-width:500px;width:92%;text-align:center;box-shadow:0 22px 0 #5D3A1A;animation:aparecer .4s;}
+.ganador-icono-big{font-size:5rem;margin-bottom:12px;}
+.ganador-texto-big{font-size:2.8rem;color:#B22222;text-shadow:3px 3px 0 #5D3A1A;margin-bottom:8px;text-transform:uppercase;}
+.ganador-subtexto{font-size:1.3rem;color:#5D3A1A;margin-bottom:14px;}
+.ganador-tipo{background:#8B5A2B;color:#E6B422;padding:8px 20px;border-radius:20px;border:2px solid #E6B422;font-size:1.2rem;display:inline-block;margin-bottom:20px;}
+.ganador-botones{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.ganador-botones .btn-rancho{width:auto;flex:1;min-width:140px;}
+.cpu-pensando{background:#2E8B57;color:#FDF5E6;padding:9px 18px;border-radius:25px;border:3px solid #E6B422;text-align:center;font-size:1rem;margin:8px 0;animation:parpadeo .8s infinite;}
+.tipos-victoria{background:rgba(93,58,26,.12);border:2px dashed #8B5A2B;border-radius:20px;padding:10px;margin:10px 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.tipo-item{background:#5D3A1A;color:#E6B422;padding:5px 12px;border-radius:15px;border:2px solid #E6B422;font-size:.88rem;}
+.sala-token-grande{background:#B22222;color:#E6B422;font-size:2rem;text-align:center;padding:14px;border-radius:30px;border:4px solid #E6B422;letter-spacing:5px;margin:10px 0;}
+.auto-info{background:#2E8B57;color:#FDF5E6;padding:10px 18px;border-radius:25px;border:3px solid #E6B422;font-size:1rem;text-align:center;margin:5px 0;}
+.refresh-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(93,58,26,.18);border:2px solid #8B5A2B;border-radius:25px;padding:8px 15px;margin:8px 0;gap:10px;flex-wrap:wrap;}
+.refresh-timer{color:#5D3A1A;font-size:.95rem;flex:1;}
+.refresh-timer span{color:#B22222;font-weight:bold;}
+.btn-refresh{background:#A0522D;border:3px solid #E6B422;border-radius:30px;color:#E6B422;font-family:'Fredoka One',cursive;font-size:1rem;padding:8px 18px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .08s;box-shadow:0 4px 0 #5D3A1A;}
+.btn-refresh:active{transform:translateY(3px);box-shadow:0 1px 0 #5D3A1A;}
+.btn-refresh.girando i{animation:girando .6s linear;}
+@keyframes girando{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes aparecer{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes parpadeo{0%,100%{opacity:1}50%{opacity:.6}}
+@keyframes bajarCarta{from{transform:translateY(-25px);opacity:0}to{transform:translateY(0);opacity:1}}
+.carta-actual-grande.animando{animation:bajarCarta .35s ease-out;}
+.hide{display:none!important;}
+::-webkit-scrollbar{width:7px;}
+::-webkit-scrollbar-track{background:#A67B5B;border-radius:8px;}
+::-webkit-scrollbar-thumb{background:#5D3A1A;border-radius:8px;}
+@media(max-width:600px){.header-rancho h2{font-size:1.4rem}.carta-item-unica{width:140px}.carta-numero{font-size:1.5rem}}
+</style>
+</head>
+<body><div class="card" id="app">
+
+<div class="header-rancho">
+  <h2>Lotería Mexicana<i class="fas fa-dice"></i></h2>
+  <p>El que canta no se espanta </p>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- P1: MODO                                 -->
+<!-- ════════════════════════════════════════ --><div id="p-modo">
+  <div class="tipos-victoria">
+    <span class="tipo-item"> Línea Horizontal</span>
+    <span class="tipo-item"> Línea Vertical</span>
+    <span class="tipo-item"> Diagonal</span>
+    <span class="tipo-item"> 4 Esquinas</span>
+  </div>
+  <div class="modo-selector">
+    <button class="btn-rancho modo-btn" onclick="seleccionarModo('cpu')">
+      <i class="fas fa-robot"></i> vs Tu
+    </button>
+    <button class="btn-rancho modo-btn" onclick="seleccionarModo('multi')">
+      <i class="fas fa-users"></i> Multijugador
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- P2: SELECCIÓN CARTA                      -->
+<!-- ════════════════════════════════════════ --><div id="p-cartas" class="hide">
+  <div class="seccion-titulo">
+    <i class="fas fa-hand-paper"></i> Elige UNA carta — <span id="titulo-modo"></span>
+  </div>
+  <div id="cartas-grid" class="seleccion-cartas-unica"></div>
+  <div class="flex-row flex-center" style="margin-top:12px;">
+    <button class="btn-rancho btn-small btn-verde" style="width:auto;flex:1;max-width:260px;" onclick="continuarConCarta()" id="btn-continuar" disabled>
+      <i class="fas fa-arrow-right"></i> Continuar
+    </button>
+    <button class="btn-rancho btn-small btn-dorado" style="width:auto;flex:1;max-width:170px;" onclick="irA('p-modo')">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- P3a: CPU LOBBY                           -->
+<!-- ════════════════════════════════════════ --><div id="p-cpu" class="hide">
+  <div class="sala-info">
+    <p><i class="fas fa-user"></i> <strong>Jugador:</strong> <span id="cpu-mi-nombre">---</span> — Carta #<span id="cpu-mi-carta">-</span></p>
+    <p><i class="fas fa-robot"></i> <strong>CPU</strong> — Carta #<span id="cpu-cpu-carta">-</span></p>
+    <p style="font-size:.9rem;color:#E6B422;">La CPU marcará automáticamente cuando salgan sus cartas</p>
+  </div>
+  <div class="flex-row flex-center">
+    <button class="btn-rancho btn-verde" style="width:auto;flex:1;max-width:240px;" onclick="iniciarJuegoCPU()">
+      <i class="fas fa-play"></i> ¡Jugar!
+    </button>
+    <button class="btn-rancho btn-small btn-dorado" style="width:auto;flex:1;max-width:160px;" onclick="irA('p-cartas')">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- P3b: MULTI OPCIONES                      -->
+<!-- ════════════════════════════════════════ --><div id="p-multi" class="hide">
+  <div class="seccion-titulo">Multijugador</div>
+  <div class="flex-row flex-center" style="margin-bottom:10px;">
+    <button class="btn-rancho btn-small btn-verde" style="width:auto;flex:1;max-width:220px;" onclick="abrirCrear()">
+      <i class="fas fa-plus-circle"></i> Crear Sala
+    </button>
+    <button class="btn-rancho btn-small" style="width:auto;flex:1;max-width:220px;" onclick="abrirUnirse()">
+      <i class="fas fa-sign-in-alt"></i> Unirse a Sala
+    </button>
+  </div>
+  <button class="btn-rancho btn-small btn-dorado" onclick="irA('p-cartas')">
+    <i class="fas fa-arrow-left"></i> Volver
+  </button>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- P4: SALA LOBBY                           -->
+<!-- ════════════════════════════════════════ --><div id="p-sala" class="hide">
+  <div class="seccion-titulo"><i class="fas fa-door-open"></i> Sala de Espera</div>
+  <div class="sala-token-grande" id="sala-tok-display">-------</div>
+  <p style="color:#5D3A1A;text-align:center;font-size:.88rem;margin-bottom:8px;">
+    <i class="fas fa-info-circle"></i> Comparte este token con tus amigos
+  </p>
+  <div class="sala-info">
+    <p><i class="fas fa-lock"></i> PIN: <span id="sala-pin-display">Sin PIN</span></p>
+    <p><i class="fas fa-users"></i> Jugadores: <span id="sala-cont">1/10</span></p>
+    <p><i class="fas fa-circle-info"></i> <span id="sala-estado">Esperando jugadores...</span></p>
+  </div>
+  <div class="refresh-bar">
+    <span class="refresh-timer"><i class="fas fa-sync"></i> Actualizando en <span id="refresh-countdown">5</span>s</span>
+    <button class="btn-refresh" onclick="actualizarSalaManual()" id="btn-refresh-sala">
+      <i class="fas fa-rotate-right"></i> Actualizar Sala
+    </button>
+  </div>
+  <div id="sala-lista-jugadores" class="jugadores-lista"></div>
+  <div class="flex-row flex-center">
+    <button class="btn-rancho btn-verde btn-small" style="width:auto;flex:1;max-width:230px;" onclick="marcarListo()" id="btn-listo">
+      <i class="fas fa-check-circle"></i> ¡Estoy Listo!
+    </button>
+    <button class="btn-rancho btn-small" style="width:auto;flex:1;max-width:210px;" id="btn-iniciar-multi" onclick="iniciarMulti()" disabled>
+      <i class="fas fa-play"></i> Iniciar Juego
+    </button>
+    <button class="btn-rancho btn-small btn-dorado" style="width:auto;flex:1;max-width:150px;" onclick="salirSala()">
+      <i class="fas fa-sign-out-alt"></i> Salir
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- P5: JUEGO                                -->
+<!-- ════════════════════════════════════════ --><div id="p-juego" class="hide">
+  <div class="juego-top">
+    <div class="carta-actual-grande" id="carta-display">
+      <i class="fas fa-clock"></i> Esperando...
+    </div>
+  </div>
+  <div id="cpu-msg" class="cpu-pensando hide">
+    <i class="fas fa-robot fa-spin"></i> CPU marcando...
+  </div>
+  <!-- Controles manuales (CPU) -->
+  <div class="control-juego" id="ctrl-manual">
+    <button class="btn-rancho btn-verde btn-small" onclick="sacarCarta()" id="btn-sacar">
+      <i class="fas fa-forward"></i> Sacar Carta
+    </button>
+    <button class="btn-rancho btn-small btn-dorado" onclick="reiniciar()">
+      <i class="fas fa-redo"></i> Reiniciar
+    </button>
+    <button class="btn-rancho btn-small btn-gris" onclick="salirMenu()">
+      <i class="fas fa-home"></i> Menú
+    </button>
+  </div>
+  <!-- Info auto (Multi) -->
+  <div class="control-juego hide" id="ctrl-auto">
+    <div class="auto-info">
+      <i class="fas fa-sync fa-spin"></i> Baraja automática · carta cada <span id="vel-txt">3s</span>
+    </div>
+    <button class="btn-rancho btn-small btn-dorado" onclick="reiniciar()">
+      <i class="fas fa-redo"></i> Reiniciar
+    </button>
+    <button class="btn-rancho btn-small btn-gris" onclick="salirMenu()">
+      <i class="fas fa-home"></i> Menú
+    </button>
+  </div>
+  <div class="historial-scroll" id="historial"></div>
+  <div id="tableros" class="grid-cartas-jugadores"></div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- POPUP CREAR                              -->
+<!-- ════════════════════════════════════════ --><div id="pop-crear" class="popup hide"><div class="popup-contenido">
+  <div class="close-popup" onclick="cerrarPops()"><i class="fas fa-times"></i></div>
+  <div class="popup-titulo"><i class="fas fa-plus-circle"></i> Crear Sala</div>
+  <input type="text" class="rancho-input" id="cr-nombre" placeholder="Tu nombre" maxlength="20">
+  <p style="color:#5D3A1A;text-align:center;font-size:.9rem;margin-bottom:4px;">Token de tu sala:</p>
+  <div class="token-display" id="cr-token">-------</div>
+  <input type="text" class="rancho-input" id="cr-pin" placeholder="PIN opcional (4 dígitos)" maxlength="4">
+  <button class="btn-rancho btn-verde btn-small" onclick="crearSala()">
+    <i class="fas fa-check"></i> Crear Sala
+  </button>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- POPUP UNIRSE                             -->
+<!-- ════════════════════════════════════════ --><div id="pop-unirse" class="popup hide"><div class="popup-contenido">
+  <div class="close-popup" onclick="cerrarPops()"><i class="fas fa-times"></i></div>
+  <div class="popup-titulo"><i class="fas fa-sign-in-alt"></i> Unirse a Sala</div>
+  <input type="text" class="rancho-input" id="un-nombre" placeholder="Tu nombre" maxlength="20">
+  <input type="text" class="rancho-input" id="un-token" placeholder="Token de la sala (7 dígitos)" maxlength="7">
+  <input type="text" class="rancho-input" id="un-pin" placeholder="PIN (si aplica)">
+  <button class="btn-rancho btn-small" onclick="unirseSala()">
+    <i class="fas fa-sign-in-alt"></i> Unirse
+  </button>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════ -->
+<!-- OVERLAY GANADOR                          -->
+<!-- ════════════════════════════════════════ --><div id="overlay-win" class="ganador-overlay hide"><div class="ganador-contenido">
+  <div class="ganador-icono-big" id="win-icon">????</div>
+  <div class="ganador-texto-big" id="win-nombre">---</div>
+  <div class="ganador-tipo" id="win-tipo">¡Lotería!</div>
+  <div class="ganador-subtexto" id="win-sub"></div>
+  <div class="ganador-botones">
+    <button class="btn-rancho btn-verde btn-small" onclick="jugarNuevo()">
+      <i class="fas fa-redo"></i> Jugar de Nuevo
+    </button>
+    <button class="btn-rancho btn-small btn-dorado" onclick="salirMenu()">
+      <i class="fas fa-home"></i> Menú Principal
+    </button>
+  </div>
+</div>
+</div>
+<div class="footer-ranch">
+  <i class="fas fa-horse"></i>
+  <i class="fas fa-tractor"></i>
+  <i class="fas fa-wheat-alt"></i>
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   BARAJA COMPLETA
+═══════════════════════════════════════════════════════ */
+const BARAJA=[
+  {id:1, n:"El Gallo",       img:"https://files.catbox.moe/1rjvbj.jpg"},
+  {id:2, n:"El Diablo",      img:"https://files.catbox.moe/fbsuoh.jpg"},
+  {id:3, n:"La Dama",        img:"https://files.catbox.moe/xyir9o.jpg"},
+  {id:4, n:"El Catrín",      img:"https://files.catbox.moe/v0ky95.jpg"},
+  {id:5, n:"El Paraguas",    img:"https://files.catbox.moe/hyyw6y.jpg"},
+  {id:6, n:"La Sirena",      img:"https://files.catbox.moe/s9wcba.jpg"},
+  {id:7, n:"La Escalera",    img:"https://files.catbox.moe/qctcsb.jpg"},
+  {id:8, n:"La Botella",     img:"https://files.catbox.moe/zmgxqs.jpg"},
+  {id:9, n:"El Barril",      img:"https://files.catbox.moe/sl6olb.jpg"},
+  {id:10,n:"El Árbol",       img:"https://files.catbox.moe/ihidwd.jpg"},
+  {id:11,n:"El Melón",       img:"https://files.catbox.moe/ekllsk.jpg"},
+  {id:12,n:"El Valiente",    img:"https://files.catbox.moe/7bdp0v.jpg"},
+  {id:13,n:"El Gorrito",     img:"https://files.catbox.moe/mmkxkj.jpg"},
+  {id:14,n:"La Muerte",      img:"https://files.catbox.moe/v0pfve.jpg"},
+  {id:15,n:"La Pera",        img:"https://files.catbox.moe/jciftc.jpg"},
+  {id:16,n:"La Bandera",     img:"https://files.catbox.moe/z1oqya.jpg"},
+  {id:17,n:"El Bandolón",    img:"https://files.catbox.moe/p08oam.jpg"},
+  {id:18,n:"El Violoncello", img:"https://files.catbox.moe/560vgp.jpg"},
+  {id:19,n:"La Garza",       img:"https://files.catbox.moe/b8zizu.jpg"},
+  {id:20,n:"El Pájaro",      img:"https://files.catbox.moe/wpmgwl.jpg"},
+  {id:21,n:"La Mano",        img:"https://files.catbox.moe/56avok.jpg"},
+  {id:22,n:"La Bota",        img:"https://files.catbox.moe/4mo4ej.jpg"},
+  {id:23,n:"La Luna",        img:"https://files.catbox.moe/agh0ts.jpg"},
+  {id:24,n:"El Cotorro",     img:"https://files.catbox.moe/67n79u.jpg"},
+  {id:25,n:"El Borracho",    img:"https://files.catbox.moe/hvrvua.jpg"},
+  {id:26,n:"El Negrito",     img:"https://files.catbox.moe/mtqdup.jpg"},
+  {id:27,n:"El Corazón",     img:"https://files.catbox.moe/y0nouf.jpg"},
+  {id:28,n:"La Sandía",      img:"https://files.catbox.moe/j1tx6n.jpg"},
+  {id:29,n:"El Tambor",      img:"https://files.catbox.moe/0nh0w4.jpg"},
+  {id:30,n:"El Camarón",     img:"https://files.catbox.moe/9aqnhm.jpg"},
+  {id:31,n:"Las Jaras",      img:"https://files.catbox.moe/ki5ltn.jpg"},
+  {id:32,n:"El Músico",      img:"https://files.catbox.moe/xse75g.jpg"},
+  {id:33,n:"La Araña",       img:"https://files.catbox.moe/5qxovr.jpg"},
+  {id:34,n:"El Soldado",     img:"https://files.catbox.moe/sh8ysn.jpg"},
+  {id:35,n:"La Estrella",    img:"https://files.catbox.moe/rhm4ox.jpg"},
+  {id:36,n:"El Cazo",        img:"https://files.catbox.moe/dz9csz.jpg"},
+  {id:37,n:"El Mundo",       img:"https://files.catbox.moe/d1aofj.jpg"},
+  {id:38,n:"El Apache",      img:"https://files.catbox.moe/ay2jhs.jpg"},
+  {id:39,n:"El Nopal",       img:"https://files.catbox.moe/wtohrv.jpg"},
+  {id:40,n:"El Alacrán",     img:"https://files.catbox.moe/24r37c.jpg"},
+  {id:41,n:"La Rosa",        img:"https://files.catbox.moe/iz2gto.jpg"},
+  {id:42,n:"La Calavera",    img:"https://files.catbox.moe/0r80xz.jpg"},
+  {id:43,n:"La Campana",     img:"https://files.catbox.moe/fwbmjo.jpg"},
+  {id:44,n:"El Cantarito",   img:"https://files.catbox.moe/6m9tsb.jpg"},
+  {id:45,n:"El Venado",      img:"https://files.catbox.moe/r5h7lp.jpg"},
+  {id:46,n:"El Sol",         img:"https://files.catbox.moe/hop6tu.jpg"},
+  {id:47,n:"La Corona",      img:"https://files.catbox.moe/25uijt.jpg"},
+  {id:48,n:"La Chalupa",     img:"https://files.catbox.moe/jvt4et.jpg"},
+  {id:49,n:"El Pino",        img:"https://files.catbox.moe/j0dnvy.jpg"},
+  {id:50,n:"El Pescado",     img:"https://files.catbox.moe/1sy3gw.jpg"},
+  {id:51,n:"La Palma",       img:"https://files.catbox.moe/7m6bg2.jpg"},
+  {id:52,n:"La Maceta",      img:"https://files.catbox.moe/mwh895.jpg"},
+  {id:53,n:"El Arpa",        img:"https://files.catbox.moe/z1i89f.jpg"},
+  {id:54,n:"La Rana",        img:"https://files.catbox.moe/ndfi31.jpg"}
+];
+
+const API='https://69a0d5e72e82ee536f9fa591.mockapi.io/Api/Loteria/pdaodpawjkpodkaowdkdoapwkdopajwidhiwahiowkqopko2qiei2qeo2qe2qe9i29qeo2qe2qieiiqceiq2r9uiejfuiwenvuiwhuf8w3ufu9iqi2q9i92fu9uiojeojfewihfiu3wuwefefewfefewfw3jf8j83wjfjuinweubcuihwh83u8uu90iidiq-U';
+
+/* ═══════════════════════════════════════════════════════
+   ESTADO
+═══════════════════════════════════════════════════════ */
+let G={
+  modo:null,
+  selIdx:null,          // carta seleccionada (índice 0-53)
+  cartas:[],            // 54 cartas con grid fijo
+  usadas:new Set(),     // índices de cartas ocupadas en esta sesión
+  usuario:null,         // {nombre,id}
+  esHost:false,
+  salaToken:null,
+  salaPin:null,
+  salaId:null,
+  jugadores:[],         // [{nombre,id,esCPU,carta:{num,grid}}]
+  listos:new Set(),
+  baraja:[],
+  hist:[],
+  actual:null,
+  terminado:false,
+  modoAuto:false,
+  autoInt:null,
+  cpuTOut:null,
+  _cpuIdx:null
+};
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+function init(){
+  buildCartas();
+  irA('p-modo');
+}
+
+/* ─── Construir 54 cartas con grids deterministas ─── */
+function buildCartas(){
+  G.cartas=[];
+  for(let c=0;c<54;c++){
+    const mix=semShuffle([...BARAJA],c*173+31).slice(0,16);
+    const grid=[];
+    for(let i=0;i<4;i++){
+      const row=[];
+      for(let j=0;j<4;j++) row.push({id:mix[i*4+j].id,n:mix[i*4+j].n,img:mix[i*4+j].img,m:false});
+      grid.push(row);
+    }
+    G.cartas.push({num:c+1,grid});
+  }
+}
+
+function semShuffle(a,s){
+  const r=[...a]; let x=s>>>0;
+  for(let i=r.length-1;i>0;i--){
+    x=(Math.imul(x,1664525)+1013904223)>>>0;
+    const j=x%(i+1);[r[i],r[j]]=[r[j],r[i]];
+  }
+  return r;
+}
+
+function randShuffle(a){
+  const r=[...a];
+  for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];}
+  return r;
+}
+
+function cloneGrid(g){return g.map(f=>f.map(c=>({...c,m:false})));}
+function genTok(){return Math.floor(1000000+Math.random()*9000000).toString();}
+function genId(){return 'u'+Math.random().toString(36).substr(2,9);}
+
+/* ═══════════════════════════════════════════════════════
+   NAVEGACIÓN
+═══════════════════════════════════════════════════════ */
+const PANS=['p-modo','p-cartas','p-cpu','p-multi','p-sala','p-juego'];
+function irA(id){PANS.forEach(p=>document.getElementById(p).classList.toggle('hide',p!==id));}
+
+/* ═══════════════════════════════════════════════════════
+   MODO
+═══════════════════════════════════════════════════════ */
+function seleccionarModo(m){
+  G.modo=m; G.selIdx=null;
+  document.getElementById('titulo-modo').textContent=m==='cpu'?'vs CPU':'Multijugador';
+  renderCartas();
+  irA('p-cartas');
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER CARTAS (con bloqueadas)
+═══════════════════════════════════════════════════════ */
+function renderCartas(){
+  const cont=document.getElementById('cartas-grid');
+  cont.innerHTML='';
+  G.cartas.forEach((carta,idx)=>{
+    const ocupada=G.usadas.has(idx);
+    const sel=G.selIdx===idx;
+    const d=document.createElement('div');
+    d.className='carta-item-unica'+(sel?' seleccionada':'')+(ocupada?' ocupada':'');
+    if(!ocupada) d.onclick=()=>pickCarta(idx);
+
+    let mini='<div class="carta-mini-grid">';
+    for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+      const cel=carta.grid[i][j];
+      mini+=`<div class="carta-mini-cell" title="${cel.n}"><img src="${cel.img}" alt="${cel.n}" loading="lazy"></div>`;
+    }
+    mini+='</div>';
+
+    d.innerHTML=`<span class="carta-numero">${carta.num}</span>
+      <div style="font-size:.72rem;color:#8B5A2B;margin-bottom:2px;">Carta #${carta.num}</div>
+      ${mini}${ocupada?'<div class="carta-ocupada-badge">Ocupada</div>':''}`;
+    cont.appendChild(d);
+  });
+  document.getElementById('btn-continuar').disabled=G.selIdx===null;
+}
+
+function pickCarta(idx){
+  G.selIdx=G.selIdx===idx?null:idx;
+  renderCartas();
+  document.getElementById('btn-continuar').disabled=G.selIdx===null;
+}
+
+/* ═══════════════════════════════════════════════════════
+   CONTINUAR
+═══════════════════════════════════════════════════════ */
+function continuarConCarta(){
+  if(G.selIdx===null) return;
+  if(G.modo==='cpu'){
+    const nombre=(prompt('Tu nombre de jugador:','Jugador')||'Jugador').trim()||'Jugador';
+    G.usuario={nombre,id:genId()};
+    // CPU usa una carta diferente y no usada
+    let ci=G.selIdx;
+    do{ci=(ci+7)%54;}while(ci===G.selIdx||G.usadas.has(ci));
+    G._cpuIdx=ci;
+    document.getElementById('cpu-mi-nombre').textContent=nombre;
+    document.getElementById('cpu-mi-carta').textContent=G.selIdx+1;
+    document.getElementById('cpu-cpu-carta').textContent=ci+1;
+    irA('p-cpu');
+  } else {
+    irA('p-multi');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CPU JUEGO
+═══════════════════════════════════════════════════════ */
+function iniciarJuegoCPU(){
+  const mi=G.selIdx, ci=G._cpuIdx;
+  G.usadas.add(mi); G.usadas.add(ci);
+  G.jugadores=[
+    {nombre:G.usuario.nombre,id:G.usuario.id,esCPU:false,
+     carta:{num:mi+1,grid:cloneGrid(G.cartas[mi].grid)}},
+    {nombre:'CPU ????',id:'cpu',esCPU:true,
+     carta:{num:ci+1,grid:cloneGrid(G.cartas[ci].grid)}}
+  ];
+  G.esHost=true;
+  comenzarJuego(true); // AUTO: cartas corren solas igual que en multi
+}
+
+/* ═══════════════════════════════════════════════════════
+   MULTI — CREAR / UNIRSE
+═══════════════════════════════════════════════════════ */
+function abrirCrear(){
+  const t=genTok();
+  const el=document.getElementById('cr-token');
+  el.textContent=t; el.dataset.t=t;
+  document.getElementById('cr-nombre').value='';
+  document.getElementById('cr-pin').value='';
+  document.getElementById('pop-crear').classList.remove('hide');
+}
+
+function abrirUnirse(){
+  document.getElementById('un-nombre').value='';
+  document.getElementById('un-token').value='';
+  document.getElementById('un-pin').value='';
+  document.getElementById('pop-unirse').classList.remove('hide');
+}
+
+function cerrarPops(){
+  document.getElementById('pop-crear').classList.add('hide');
+  document.getElementById('pop-unirse').classList.add('hide');
+}
+
+async function crearSala(){
+  const nombre=document.getElementById('cr-nombre').value.trim();
+  const token=document.getElementById('cr-token').dataset.t;
+  const pin=document.getElementById('cr-pin').value.trim();
+  if(!nombre){alert('Escribe tu nombre');return;}
+  if(pin&&!/^\d{4}$/.test(pin)){alert('PIN debe ser 4 dígitos');return;}
+
+  G.usuario={nombre,id:genId()};
+  G.salaToken=token; G.salaPin=pin||''; G.esHost=true; G.listos=new Set();
+
+  const jd={nombre,id:G.usuario.id,cartaNum:G.selIdx+1};
+  const sd={token,pin:pin||'',estado:'esperando',jugadores:[jd],cartasUsadas:[G.selIdx]};
+
+  try{
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sd)});
+    if(r.ok){const d=await r.json();G.salaId=d.id;}else throw new Error();
+  }catch(e){G.salaId='local-'+Date.now();}
+
+  G.usadas.add(G.selIdx);
+  G.jugadores=[{nombre,id:G.usuario.id,esCPU:false,listo:false,
+    carta:{num:G.selIdx+1,grid:cloneGrid(G.cartas[G.selIdx].grid)}}];
+
+  cerrarPops();
+  mostrarSalaLobby();
+}
+
+async function unirseSala(){
+  const nombre=document.getElementById('un-nombre').value.trim();
+  const token=document.getElementById('un-token').value.trim();
+  const pin=document.getElementById('un-pin').value.trim();
+  if(!nombre||!token){alert('Completa nombre y token');return;}
+
+  try{
+    const r=await fetch(`${API}?token=${token}`);
+    if(!r.ok) throw new Error('Sin respuesta del servidor');
+    const salas=await r.json();
+    const sala=Array.isArray(salas)?salas.find(s=>s.token===token):(salas&&salas.token===token?salas:null);
+    if(!sala){alert('Sala no encontrada con ese token');return;}
+    if(sala.pin&&sala.pin!==pin){alert('PIN incorrecto');return;}
+    if(sala.estado==='jugando'){alert('Partida ya en curso');return;}
+    if((sala.jugadores||[]).length>=10){alert('Sala llena (máx 10)');return;}
+
+    // Verificar carta no ocupada
+    const usadasSala=sala.cartasUsadas||[];
+    if(usadasSala.includes(G.selIdx)){
+      alert(`La Carta #${G.selIdx+1} ya está ocupada en esta sala. Vuelve y elige otra.`);
+      cerrarPops();
+      irA('p-cartas');
+      return;
+    }
+
+    G.usuario={nombre,id:genId()};
+    G.salaToken=sala.token; G.salaPin=sala.pin||''; G.salaId=sala.id; G.esHost=false; G.listos=new Set();
+
+    const jd={nombre,id:G.usuario.id,cartaNum:G.selIdx+1};
+    sala.jugadores=[...(sala.jugadores||[]),jd];
+    sala.cartasUsadas=[...usadasSala,G.selIdx];
+
+    await fetch(`${API}/${sala.id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sala)});
+
+    G.usadas.add(G.selIdx);
+    G.jugadores=sala.jugadores.map(j=>{
+      const ci=(j.cartaNum||1)-1;
+      return{nombre:j.nombre,id:j.id,esCPU:false,listo:false,
+             carta:{num:j.cartaNum,grid:cloneGrid(G.cartas[ci].grid)}};
+    });
+
+    cerrarPops();
+    mostrarSalaLobby();
+  }catch(e){
+    alert('Error al unirse: '+e.message);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SALA LOBBY  +  POLLING AUTOMÁTICO
+═══════════════════════════════════════════════════════ */
+function mostrarSalaLobby(){
+  document.getElementById('sala-tok-display').textContent=G.salaToken;
+  document.getElementById('sala-pin-display').textContent=G.salaPin||'Sin PIN';
+  document.getElementById('btn-iniciar-multi').classList.toggle('hide',!G.esHost);
+  renderSalaLobby();
+  irA('p-sala');
+  iniciarPolling();
+}
+
+/* ── Render visual de la lista ── */
+function renderSalaLobby(){
+  document.getElementById('sala-cont').textContent=`${G.jugadores.length}/10`;
+  const lista=document.getElementById('sala-lista-jugadores');
+  lista.innerHTML='';
+  G.jugadores.forEach(j=>{
+    const listo=G.listos.has(j.id);
+    const d=document.createElement('div');
+    d.className='jugador-item'+(listo?' listo':'');
+    d.innerHTML=`<span><i class="fas fa-user"></i> ${j.nombre}${j.id===G.usuario.id?' <span style="font-size:.75rem;opacity:.7">(tú)</span>':''}</span>
+      <span class="token-badge${listo?' badge-listo':''}">Carta #${j.carta.num}${listo?' ✓':''}</span>`;
+    lista.appendChild(d);
+  });
+  const todosL=G.jugadores.length>=2&&G.jugadores.every(j=>G.listos.has(j.id));
+  document.getElementById('sala-estado').textContent=
+    todosL?'✅ Todos listos — El host puede iniciar':'Esperando que todos presionen "¡Estoy Listo!"...';
+  if(G.esHost) document.getElementById('btn-iniciar-multi').disabled=!todosL;
+}
+
+/* ── Polling automático cada 5 s ── */
+let _pollInt=null, _countInt=null, _countdown=5;
+
+function iniciarPolling(){
+  pararPolling();
+  _countdown=5;
+  actualizarCountdown();
+  _countInt=setInterval(()=>{
+    _countdown--;
+    actualizarCountdown();
+    if(_countdown<=0){ _countdown=5; fetchSalaRemota(); }
+  },1000);
+}
+
+function pararPolling(){
+  if(_pollInt)  clearInterval(_pollInt);
+  if(_countInt) clearInterval(_countInt);
+  _pollInt=null; _countInt=null;
+}
+
+function actualizarCountdown(){
+  const el=document.getElementById('refresh-countdown');
+  if(el) el.textContent=_countdown;
+}
+
+/* ── Fetch sala desde API y actualizar estado local ── */
+async function fetchSalaRemota(){
+  if(!G.salaId||!G.salaToken) return;
+  const btn=document.getElementById('btn-refresh-sala');
+  if(btn){btn.classList.add('girando');}
+  try{
+    // Si tenemos ID directo usamos endpoint por ID, sino buscamos por token
+    let sala=null;
+    if(G.salaId&&!G.salaId.startsWith('local-')){
+      const r=await fetch(`${API}/${G.salaId}`);
+      if(r.ok) sala=await r.json();
+    }
+    if(!sala){
+      const r=await fetch(`${API}?token=${G.salaToken}`);
+      if(r.ok){
+        const datos=await r.json();
+        sala=Array.isArray(datos)?datos.find(s=>s.token===G.salaToken):
+             (datos&&datos.token===G.salaToken?datos:null);
+      }
+    }
+    if(!sala){if(btn)btn.classList.remove('girando');return;}
+
+    // Sincronizar jugadores: agregar nuevos, no borrar los locales
+    const jugApi=sala.jugadores||[];
+    const idsActuales=new Set(G.jugadores.map(j=>j.id));
+    jugApi.forEach(jApi=>{
+      if(!idsActuales.has(jApi.id)){
+        const ci=(jApi.cartaNum||1)-1;
+        G.jugadores.push({
+          nombre:jApi.nombre, id:jApi.id, esCPU:false, listo:false,
+          carta:{num:jApi.cartaNum||1, grid:cloneGrid(G.cartas[ci<0?0:ci].grid)}
+        });
+        G.usadas.add(ci<0?0:ci);
+      }
+    });
+
+    // Sincronizar "listos" desde la API (campo listosIds si existe)
+    if(Array.isArray(sala.listosIds)){
+      sala.listosIds.forEach(id=>G.listos.add(id));
+    }
+
+    // Si sala pasó a estado 'jugando' y no somos el host → arrancar automáticamente
+    if(sala.estado==='jugando'&&!G.terminado&&!G.modoAuto){
+      pararPolling();
+      comenzarJuego(true);
+      return;
+    }
+
+    renderSalaLobby();
+  }catch(e){
+    console.warn('Error actualizando sala:',e);
+  }
+  if(btn) btn.classList.remove('girando');
+}
+
+/* ── Botón manual de actualizar ── */
+async function actualizarSalaManual(){
+  _countdown=5;
+  actualizarCountdown();
+  await fetchSalaRemota();
+}
+
+/* ── Marcar listo: actualiza localmente y sube a API ── */
+async function marcarListo(){
+  G.listos.add(G.usuario.id);
+  const btn=document.getElementById('btn-listo');
+  btn.disabled=true;
+  btn.innerHTML='<i class="fas fa-check"></i> ¡Listo!';
+  renderSalaLobby();
+  // Persistir en API
+  if(G.salaId&&!G.salaId.startsWith('local-')){
+    try{
+      const r=await fetch(`${API}/${G.salaId}`);
+      if(r.ok){
+        const sala=await r.json();
+        sala.listosIds=[...new Set([...(sala.listosIds||[]),G.usuario.id])];
+        await fetch(`${API}/${G.salaId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sala)});
+      }
+    }catch(e){console.warn('No se pudo guardar listo en API',e);}
+  }
+}
+
+function salirSala(){
+  pararPolling();
+  G.jugadores=[];G.listos=new Set();G.salaToken=null;G.salaId=null;
+  irA('p-modo');
+}
+
+async function iniciarMulti(){
+  if(G.jugadores.length<2){alert('Se necesitan al menos 2 jugadores');return;}
+  // Marcar en API que el juego comenzó
+  if(G.salaId&&!G.salaId.startsWith('local-')){
+    try{
+      const r=await fetch(`${API}/${G.salaId}`);
+      if(r.ok){
+        const sala=await r.json();
+        sala.estado='jugando';
+        await fetch(`${API}/${G.salaId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sala)});
+      }
+    }catch(e){console.warn('No se pudo actualizar estado sala',e);}
+  }
+  pararPolling();
+  comenzarJuego(true);
+}
+
+/* ═══════════════════════════════════════════════════════
+   COMENZAR JUEGO
+   - auto=true  → baraja corre sola (CPU y Multi)
+   - En multi, el HOST genera una semilla y la guarda en API
+     para que todos los jugadores tengan la MISMA baraja
+═══════════════════════════════════════════════════════ */
+async function comenzarJuego(auto){
+  if(G.autoInt) clearInterval(G.autoInt);
+  if(G.cpuTOut) clearTimeout(G.cpuTOut);
+
+  // Generar semilla de baraja: el host la crea, los demás la leen
+  let semilla = G.barajaSemilla || Math.floor(Math.random()*9999999);
+  G.barajaSemilla = semilla;
+
+  // En multi, el host guarda la semilla y el estado del juego en API
+  if(G.salaId && !G.salaId.startsWith('local-') && G.esHost){
+    try{
+      const r=await fetch(`${API}/${G.salaId}`);
+      if(r.ok){
+        const sala=await r.json();
+        sala.estado='jugando';
+        sala.barajaSemilla=semilla;
+        sala.historialIds=[]; // baraja compartida vacía al inicio
+        sala.marcadosPorJugador={}; // marcados de cada jugador
+        await fetch(`${API}/${G.salaId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sala)});
+      }
+    }catch(e){console.warn('No se pudo guardar estado juego',e);}
+  }
+
+  G.baraja=semShuffle([...BARAJA], semilla);
+  G.hist=[]; G.actual=null; G.terminado=false; G.modoAuto=auto;
+
+  // Reset marcados locales
+  G.jugadores.forEach(j=>j.carta.grid.forEach(f=>f.forEach(c=>c.m=false)));
+
+  // UI
+  document.getElementById('carta-display').innerHTML='<span class="carta-nombre"><i class="fas fa-clock"></i> Iniciando...</span>';
+  document.getElementById('historial').innerHTML='<span class="historial-item">Inicio</span>';
+  document.getElementById('cpu-msg').classList.add('hide');
+  document.getElementById('overlay-win').classList.add('hide');
+  document.getElementById('ctrl-manual').classList.toggle('hide',auto);
+  document.getElementById('ctrl-auto').classList.toggle('hide',!auto);
+
+  renderTableros();
+  irA('p-juego');
+
+  if(auto){
+    // Si es multi y NO es host → no corro baraja local, espero sync de API
+    if(G.salaId && !G.salaId.startsWith('local-') && !G.esHost){
+      // Solo sincronizo desde API
+      iniciarSyncJuego();
+      return;
+    }
+    // Host o CPU: corro la baraja
+    setTimeout(()=>{
+      sacarCarta();
+      G.autoInt=setInterval(()=>{
+        if(!G.terminado) sacarCarta();
+        else clearInterval(G.autoInt);
+      },3000);
+    },1200);
+    // Si es multi host, también sincronizo marcados de otros jugadores
+    if(G.salaId && !G.salaId.startsWith('local-')){
+      iniciarSyncJuego();
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SACAR CARTA  (host o CPU)
+   En multi, el host sube el historial a la API para que
+   los demás jugadores lo lean en el polling.
+═══════════════════════════════════════════════════════ */
+async function sacarCarta(){
+  if(G.terminado) return;
+  if(G.baraja.length===0){
+    if(G.autoInt) clearInterval(G.autoInt);
+    if(!G.modoAuto) alert('¡Se acabó la baraja! Reinicia para jugar de nuevo.');
+    return;
+  }
+
+  G.actual=G.baraja.shift();
+  G.hist.push(G.actual);
+
+  const d=document.getElementById('carta-display');
+  d.className='carta-actual-grande animando';
+  d.innerHTML=`<img src="${G.actual.img}" alt="${G.actual.n}"><span class="carta-nombre">${G.actual.n}</span>`;
+  setTimeout(()=>d.classList.remove('animando'),350);
+
+  renderHistorial();
+
+  // CPU auto-marca
+  const cpu=G.jugadores.find(j=>j.esCPU);
+  if(cpu&&!G.terminado){
+    document.getElementById('cpu-msg').classList.remove('hide');
+    if(G.cpuTOut) clearTimeout(G.cpuTOut);
+    G.cpuTOut=setTimeout(()=>{
+      document.getElementById('cpu-msg').classList.add('hide');
+      cpuMarca(cpu);
+      renderTableros();
+      checkWin();
+    },500+Math.random()*700);
+  }
+
+  renderTableros();
+  checkWin();
+
+  // En multi: el host sube el historial a la API para sync de jugadores
+  if(G.salaId&&!G.salaId.startsWith('local-')&&G.esHost){
+    try{
+      const r=await fetch(`${API}/${G.salaId}`);
+      if(r.ok){
+        const sala=await r.json();
+        sala.historialIds=G.hist.map(c=>c.id);
+        if(G.terminado) sala.estado='terminado';
+        await fetch(`${API}/${G.salaId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sala)});
+      }
+    }catch(e){console.warn('No se pudo sync historial',e);}
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   CPU MARCA AUTO
+═══════════════════════════════════════════════════════ */
+function cpuMarca(cpu){
+  if(!G.actual||G.terminado) return;
+  for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+    const c=cpu.carta.grid[i][j];
+    if(c.id===G.actual.id&&!c.m){c.m=true;return;}
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MARCADO MANUAL
+   Marca cualquier casilla que ya salió en el historial.
+   En multi, sube los marcados a la API para que el host
+   y otros jugadores los vean en el tablero compartido.
+═══════════════════════════════════════════════════════ */
+async function marcarCelda(jid,fi,fj){
+  if(G.terminado) return;
+  if(!G.hist.length){alert('Espera a que salga una carta');return;}
+  const jug=G.jugadores.find(j=>j.id===jid);
+  if(!jug||jug.esCPU) return;
+  const cel=jug.carta.grid[fi][fj];
+  if(cel.m) return;
+  const salio=G.hist.some(h=>h.id===cel.id);
+  if(!salio) return;
+  cel.m=true;
+  renderTableros();
+  checkWin();
+
+  // Sync marcados a API en modo multi
+  if(G.salaId&&!G.salaId.startsWith('local-')){
+    try{
+      const r=await fetch(`${API}/${G.salaId}`);
+      if(r.ok){
+        const sala=await r.json();
+        if(!sala.marcadosPorJugador) sala.marcadosPorJugador={};
+        // Guardar posiciones marcadas como array de "i,j"
+        const marcados=[];
+        for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+          if(jug.carta.grid[i][j].m) marcados.push(`${i},${j}`);
+        }
+        sala.marcadosPorJugador[jug.id]=marcados;
+        await fetch(`${API}/${G.salaId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(sala)});
+      }
+    }catch(e){console.warn('No se pudo sync marcados',e);}
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SYNC DE JUEGO MULTI (polling cada 2s mientras se juega)
+   - Jugadores no-host leen la baraja del host desde API
+   - El host lee los marcados de los demás jugadores
+═══════════════════════════════════════════════════════ */
+let _syncJuegoInt=null;
+
+function iniciarSyncJuego(){
+  if(_syncJuegoInt) clearInterval(_syncJuegoInt);
+  _syncJuegoInt=setInterval(syncEstadoJuego, 2000);
+}
+
+function pararSyncJuego(){
+  if(_syncJuegoInt) clearInterval(_syncJuegoInt);
+  _syncJuegoInt=null;
+}
+
+async function syncEstadoJuego(){
+  if(G.terminado||!G.salaId||G.salaId.startsWith('local-')) return;
+  try{
+    const r=await fetch(`${API}/${G.salaId}`);
+    if(!r.ok) return;
+    const sala=await r.json();
+
+    let cambio=false;
+
+    // ── Para NO-HOST: recibir historial y reconstruir estado ──
+    if(!G.esHost && Array.isArray(sala.historialIds) && sala.historialIds.length>G.hist.length){
+      // Calcular baraja con la semilla del host
+      if(sala.barajaSemilla && G.barajaSemilla!==sala.barajaSemilla){
+        G.barajaSemilla=sala.barajaSemilla;
+        G.baraja=semShuffle([...BARAJA],sala.barajaSemilla);
+        G.hist=[];
+        G.jugadores.forEach(j=>j.carta.grid.forEach(f=>f.forEach(c=>c.m=false)));
+      }
+      // Avanzar baraja local hasta coincidir con el historial del host
+      const histIds=sala.historialIds;
+      while(G.hist.length < histIds.length && G.baraja.length>0){
+        const siguiente=G.baraja.shift();
+        if(siguiente.id===histIds[G.hist.length]){
+          G.hist.push(siguiente);
+          G.actual=siguiente;
+        }
+      }
+      // Actualizar display
+      if(G.actual){
+        const d=document.getElementById('carta-display');
+        d.className='carta-actual-grande animando';
+        d.innerHTML=`<img src="${G.actual.img}" alt="${G.actual.n}"><span class="carta-nombre">${G.actual.n}</span>`;
+        setTimeout(()=>d.classList.remove('animando'),350);
+        renderHistorial();
+      }
+      cambio=true;
+    }
+
+    // ── Para TODOS: recibir marcados de otros jugadores ──
+    if(sala.marcadosPorJugador){
+      G.jugadores.forEach(jug=>{
+        if(jug.id===G.usuario.id) return; // mis propios marcados los manejo local
+        const marcadosApi=sala.marcadosPorJugador[jug.id];
+        if(!Array.isArray(marcadosApi)) return;
+        // Aplicar marcados al grid del jugador
+        for(let i=0;i<4;i++) for(let j=0;j<4;j++) jug.carta.grid[i][j].m=false;
+        marcadosApi.forEach(pos=>{
+          const [fi,fj]=pos.split(',').map(Number);
+          if(jug.carta.grid[fi]&&jug.carta.grid[fi][fj]) jug.carta.grid[fi][fj].m=true;
+        });
+        cambio=true;
+      });
+    }
+
+    if(cambio){
+      renderTableros();
+      checkWin();
+    }
+
+    // Si el juego terminó en API
+    if(sala.estado==='terminado'&&!G.terminado){
+      G.terminado=true;
+      if(G.autoInt) clearInterval(G.autoInt);
+      pararSyncJuego();
+    }
+  }catch(e){console.warn('Error sync juego:',e);}
+}
+
+/* ═══════════════════════════════════════════════════════
+   VERIFICAR GANADOR — 4 condiciones de victoria
+═══════════════════════════════════════════════════════ */
+function checkWin(){
+  for(const jug of G.jugadores){
+    const res=victoriaCheck(jug.carta.grid);
+    if(res){
+      G.terminado=true;
+      if(G.autoInt) clearInterval(G.autoInt);
+      mostrarGanador(jug,res);
+      renderTableros();
+      return;
+    }
+  }
+}
+
+function victoriaCheck(g){
+  const m=(i,j)=>g[i][j].m;
+  // 1. Fila completa
+  for(let i=0;i<4;i++) if(g[i].every(c=>c.m)) return '➖ ¡Línea Horizontal!';
+  // 2. Columna completa
+  for(let j=0;j<4;j++) if(m(0,j)&&m(1,j)&&m(2,j)&&m(3,j)) return '⬆ ¡Línea Vertical!';
+  // 3. Diagonal ↘
+  if(m(0,0)&&m(1,1)&&m(2,2)&&m(3,3)) return '↘ ¡Diagonal!';
+  // 4. Diagonal ↙
+  if(m(0,3)&&m(1,2)&&m(2,1)&&m(3,0)) return '↙ ¡Diagonal!';
+  // 5. Cuatro esquinas
+  if(m(0,0)&&m(0,3)&&m(3,0)&&m(3,3)) return '⬜ ¡Cuatro Esquinas!';
+  return null;
+}
+
+// Celdas que forman la victoria (para resaltarlas en dorado)
+function getWinCells(g){
+  const m=(i,j)=>g[i][j].m;
+  // Filas
+  for(let i=0;i<4;i++) if(g[i].every(c=>c.m)) return g[i].map((_,j)=>`${i},${j}`);
+  // Columnas
+  for(let j=0;j<4;j++) if(m(0,j)&&m(1,j)&&m(2,j)&&m(3,j)) return [`0,${j}`,`1,${j}`,`2,${j}`,`3,${j}`];
+  // Diagonal ↘
+  if(m(0,0)&&m(1,1)&&m(2,2)&&m(3,3)) return ['0,0','1,1','2,2','3,3'];
+  // Diagonal ↙
+  if(m(0,3)&&m(1,2)&&m(2,1)&&m(3,0)) return ['0,3','1,2','2,1','3,0'];
+  // Cuatro esquinas
+  if(m(0,0)&&m(0,3)&&m(3,0)&&m(3,3)) return ['0,0','0,3','3,0','3,3'];
+  return [];
+}
+
+/* ═══════════════════════════════════════════════════════
+   MOSTRAR GANADOR
+═══════════════════════════════════════════════════════ */
+function mostrarGanador(jug,tipo){
+  document.getElementById('win-icon').textContent=jug.esCPU?'????':'????';
+  document.getElementById('win-nombre').textContent=jug.esCPU?'¡La CPU Ganó!':'¡'+jug.nombre+' Ganó!';
+  document.getElementById('win-tipo').textContent=tipo;
+  document.getElementById('win-sub').textContent=jug.esCPU?'¡La máquina fue más rápida! Inténtalo de nuevo.':'¡LOTERÍA! ¡Felicidades campeón!';
+  document.getElementById('overlay-win').classList.remove('hide');
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER TABLEROS
+   - Mi carta va primero y destacada con borde dorado
+   - Las cartas de otros van después, más pequeñas
+═══════════════════════════════════════════════════════ */
+function renderTableros(){
+  const cont=document.getElementById('tableros');
+  cont.innerHTML='';
+
+  // Ordenar: mi carta primero
+  const ordenados=[...G.jugadores].sort((a,b)=>{
+    if(G.usuario&&a.id===G.usuario.id) return -1;
+    if(G.usuario&&b.id===G.usuario.id) return 1;
+    return 0;
+  });
+
+  ordenados.forEach(jug=>{
+    const esMia=G.usuario&&jug.id===G.usuario.id;
+    const res=G.terminado?victoriaCheck(jug.carta.grid):null;
+    const esWin=!!res;
+    const winSet=new Set(esWin?getWinCells(jug.carta.grid):[]);
+
+    const div=document.createElement('div');
+    let claseDiv='carta-jugador';
+    if(esMia) claseDiv+=' mi-carta';
+    if(esWin) claseDiv+=' ganador-carta';
+    div.className=claseDiv;
+
+    // Encabezado
+    const nombreLabel=jug.esCPU?'CPU ????':`${jug.nombre}${esMia?' (Tú)':''}`;
+    let html=`<div class="carta-titulo">${nombreLabel}</div>
+              <div class="carta-subtitulo">Carta #${jug.carta.num}</div>
+              <div class="grid-loteria">`;
+
+    for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+      const cel=jug.carta.grid[i][j];
+      const isWin=winSet.has(`${i},${j}`);
+      const yaEnHistorial=G.hist.some(h=>h.id===cel.id);
+      // Solo el dueño de la carta puede marcarla
+      const puedeClic=esMia&&!jug.esCPU&&!G.terminado&&yaEnHistorial&&!cel.m;
+      let cls='grid-cell';
+      if(cel.m) cls+=isWin?' marked winner-cell':' marked';
+      else if(yaEnHistorial&&esMia&&!G.terminado) cls+=' clickable'; // disponible para marcar
+      const onclick=puedeClic?`onclick="marcarCelda('${jug.id}',${i},${j})"`:'' ;
+      const nm=cel.n.replace(/^(El |La |Las |Los )/,'');
+      html+=`<div class="${cls}" ${onclick} title="${cel.n}">
+        <img src="${cel.img}" alt="${cel.n}" loading="lazy">
+        <span class="cell-label">${nm}</span>
+      </div>`;
+    }
+    html+='</div>';
+    div.innerHTML=html;
+    cont.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   HISTORIAL
+═══════════════════════════════════════════════════════ */
+function renderHistorial(){
+  const cont=document.getElementById('historial');
+  cont.innerHTML='';
+  if(!G.hist.length){cont.innerHTML='<span class="historial-item">Inicio</span>';return;}
+  [...G.hist].reverse().forEach((c,i)=>{
+    const s=document.createElement('span');
+    s.className='historial-item'+(i===0?' actual':'');
+    s.innerHTML=`<img src="${c.img}" style="width:18px;height:18px;object-fit:cover;border-radius:3px;vertical-align:middle;margin-right:4px;">${c.n}`;
+    cont.appendChild(s);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   REINICIAR / SALIR
+═══════════════════════════════════════════════════════ */
+function reiniciar(){
+  pararSyncJuego();
+  if(G.autoInt) clearInterval(G.autoInt);
+  if(G.cpuTOut) clearTimeout(G.cpuTOut);
+  document.getElementById('overlay-win').classList.add('hide');
+  G.barajaSemilla=null;
+  comenzarJuego(G.modoAuto);
+}
+
+function jugarNuevo(){
+  document.getElementById('overlay-win').classList.add('hide');
+  reiniciar();
+}
+
+function salirMenu(){
+  pararPolling();
+  pararSyncJuego();
+  if(G.autoInt) clearInterval(G.autoInt);
+  if(G.cpuTOut) clearTimeout(G.cpuTOut);
+  document.getElementById('overlay-win').classList.add('hide');
+  document.getElementById('cpu-msg').classList.add('hide');
+  const c=G.cartas;
+  G={modo:null,selIdx:null,cartas:c,usadas:new Set(),usuario:null,esHost:false,
+     salaToken:null,salaPin:null,salaId:null,jugadores:[],listos:new Set(),
+     baraja:[],hist:[],actual:null,terminado:false,modoAuto:false,
+     autoInt:null,cpuTOut:null,_cpuIdx:null,barajaSemilla:null};
+  irA('p-modo');
+}
+
+/* ─── START ─── */
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>
