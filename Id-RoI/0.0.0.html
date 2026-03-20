@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lotería Mexicana</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body{
+    background:#000;
+    font-family:'Comic Sans MS', cursive;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-color: #000;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-end;
+    padding:0;
+    min-height: 100vh;
+    /* Imagen por defecto para PC */
+    background-image: url('https://image.slidesdocs.com/responsive-images/background/farm-ranch-illustration-powerpoint-background_f2b879cc46__960_540.jpg');
+}
+
+/* BOTONES */
+.botones{
+    display:flex;
+    gap:40px;
+    flex-wrap:wrap;
+    justify-content:center;
+    opacity:0;
+    animation:fadeIn 1s ease forwards;
+    margin-bottom: 150px; /* AUMENTADO: de 50px a 150px para subir los botones */
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+/* Botón principal estilo herraje */
+.btn {
+    padding: 18px;
+    background: #B22222;
+    border: none;
+    border-radius: 60px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    color: #E6B422;
+    text-shadow: 3px 3px 0 #5D3A1A;
+    border: 5px solid #E6B422;
+    box-shadow: 0 10px 0 #5D3A1A, 0 15px 20px #2C1E0F;
+    cursor: pointer;
+    transition: all 0.08s linear;
+    margin: 15px 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    letter-spacing: 2px;
+}
+
+.btn:active {
+    transform: translateY(6px);
+    box-shadow: 0 4px 0 #5D3A1A, 0 10px 15px #2C1E0F;
+}
+
+/* Estilos para PC y pantallas grandes */
+@media (min-width: 1025px) {
+    body {
+        background-size: cover;
+    }
+    
+    .botones {
+        margin-bottom: 200px; /* AUMENTADO: más arriba en PC */
+    }
+    
+    .btn {
+        padding: 20px 50px;
+        font-size: 1.8rem;
+    }
+}
+
+/* Para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        background-size: cover;
+        justify-content: flex-end;
+        padding-bottom: 30px;
+    }
+    
+    .botones {
+        margin-bottom: 150px; /* AUMENTADO: más arriba en tablets */
+        gap: 30px;
+    }
+    
+    .btn {
+        padding: 18px 40px;
+        font-size: 2rem;
+    }
+}
+
+/* Para móvil - aquí cambiamos la imagen */
+@media (max-width: 768px) {
+    body {
+        /* Imagen para móviles */
+        background-image: url('https://static.vecteezy.com/system/resources/thumbnails/028/509/712/small_2x/a-cartoon-style-illustration-of-a-farm-with-a-red-barn-and-a-dirt-road-generative-ai-photo.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: scroll;
+        justify-content: flex-end;
+        padding-bottom: 10px;
+    }
+    
+    .botones {
+        flex-direction: row;
+        gap: 15px;
+        margin-bottom: 100px; /* AUMENTADO: de 10px a 100px para subir los botones en móvil */
+        padding: 0 15px;
+        width: 100%;
+    }
+    
+    .btn {
+        flex: 1;
+        min-width: 120px;
+        max-width: 200px;
+        padding: 15px 10px;
+        font-size: 1.2rem;
+        border-radius: 40px;
+        box-shadow: 0 5px 0 #5D3A1A, 0 8px 15px rgba(0,0,0,0.3);
+        white-space: nowrap;
+    }
+}
+
+/* Para móviles muy pequeños */
+@media (max-width: 480px) {
+    body {
+        padding-bottom: 8px;
+    }
+    
+    .botones {
+        gap: 10px;
+        padding: 0 10px;
+        margin-bottom: 80px; /* AUMENTADO: de 8px a 80px para subir los botones */
+    }
+    
+    .btn {
+        min-width: 100px;
+        padding: 12px 8px;
+        font-size: 1rem;
+        border-width: 2px;
+        box-shadow: 0 4px 0 #5D3A1A, 0 6px 10px rgba(0,0,0,0.3);
+    }
+}
+
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+</style>
+</head>
+
+<body><div class="botones">
+  <button class="btn" onclick="window.location.href='https://loteriamexicanaapp.forum2x2.ru/h2-id-r'">
+  REGISTRARME
+</button>
+
+<button class="btn" onclick="window.location.href='https://loteriamexicanaapp.forum2x2.ru/h3-id-i'">
+  INICIAR
+</button>
+</div>
+</body> 
+</html>
