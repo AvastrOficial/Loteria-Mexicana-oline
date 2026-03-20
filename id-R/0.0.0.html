@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Ranchero - La Finca</title>
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #8B4513;
+            background-image: radial-gradient(circle at 10% 30%, #A0522D 5%, transparent 20%),
+                              radial-gradient(circle at 90% 70%, #CD853F 8%, transparent 25%),
+                              linear-gradient(145deg, #654321 0%, #8B4513 100%);
+            font-family: 'Fredoka One', cursive;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(45deg, rgba(160, 82, 45, 0.2) 0px, rgba(160, 82, 45, 0.2) 2px, 
+                              rgba(139, 69, 19, 0.3) 2px, rgba(139, 69, 19, 0.3) 8px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .card {
+            background: #D2B48C;
+            background: linear-gradient(165deg, #C4A484 0%, #DEB887 70%, #F4E4C1 100%);
+            border-radius: 30px 30px 40px 40px;
+            padding: 35px 25px 30px;
+            box-shadow: 0 20px 0 #5D3A1A, 0 30px 30px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 215, 140, 0.5);
+            border: 6px solid #A67B5B;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed #8B5A2B;
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .header-rancho {
+            text-align: center;
+            margin-bottom: 25px;
+            background: #A0522D;
+            padding: 15px 10px;
+            border-radius: 60px 60px 20px 20px;
+            border: 4px solid #6B3E1F;
+            box-shadow: inset 0 -4px 0 #4A2C1A, 0 6px 0 #3B2618;
+            color: #F4E4C1;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+        }
+
+        .header-rancho h2 {
+            font-size: 2rem;
+            text-shadow: 3px 3px 0 #4A2C1A;
+        }
+
+        .header-rancho p {
+            font-size: 1.2rem;
+            background: #6B3E1F;
+            display: inline-block;
+            padding: 5px 25px;
+            border-radius: 30px;
+            border: 2px solid #C4A484;
+            margin-top: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #E6B422;
+            font-size: 1.5rem;
+            text-shadow: 2px 2px 0 #5D3A1A;
+            z-index: 2;
+            width: 30px;
+            text-align: center;
+        }
+
+        .rancho-input {
+            width: 100%;
+            padding: 16px 20px 16px 60px;
+            border: 5px solid #8B5A2B;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            font-family: 'Fredoka One', cursive;
+            background: #FDF5E6;
+            box-shadow: inset 0 3px 8px #A67B5B, 0 6px 0 #5D3A1A;
+            color: #3E2B1B;
+            transition: all 0.1s ease;
+        }
+
+        .rancho-input:focus {
+            outline: none;
+            border-color: #CD853F;
+            box-shadow: inset 0 3px 8px #A67B5B, 0 6px 0 #8B4513, 0 0 15px #E6B422;
+            transform: translateY(-2px);
+        }
+
+        .rancho-input::placeholder {
+            color: #A67B5B;
+            font-style: italic;
+        }
+
+        .pin-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .pin-icons {
+            background: #8B5A2B;
+            padding: 12px 20px;
+            border-radius: 40px;
+            border: 3px solid #E6B422;
+            color: #E6B422;
+            font-size: 1.6rem;
+            display: flex;
+            gap: 12px;
+            box-shadow: inset 0 -3px 0 #4A2C1A;
+        }
+
+        .pin-icons i {
+            filter: drop-shadow(0 2px 0 #3E2B1B);
+        }
+
+        .btn-rancho {
+            width: 100%;
+            padding: 18px;
+            background: #B22222;
+            border: none;
+            border-radius: 60px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: #E6B422;
+            text-shadow: 3px 3px 0 #5D3A1A;
+            border: 5px solid #E6B422;
+            box-shadow: 0 10px 0 #5D3A1A, 0 15px 20px #2C1E0F;
+            cursor: pointer;
+            transition: all 0.08s linear;
+            margin: 15px 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: 2px;
+        }
+
+        .btn-rancho:active {
+            transform: translateY(6px);
+            box-shadow: 0 4px 0 #5D3A1A, 0 10px 15px #2C1E0F;
+        }
+
+        .btn-rancho i {
+            font-size: 2rem;
+        }
+
+        .btn-rancho:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: translateY(0);
+            box-shadow: 0 10px 0 #5D3A1A;
+        }
+
+        .btn-rancho:disabled:active {
+            transform: translateY(0);
+            box-shadow: 0 10px 0 #5D3A1A;
+        }
+
+        /* Mensajes de estado */
+        .mensaje-container {
+            position: relative;
+            margin-top: 20px;
+            min-height: 120px;
+        }
+
+        .mensaje {
+            padding: 18px;
+            border-radius: 40px;
+            text-align: center;
+            border: 5px solid #E6B422;
+            font-size: 1.3rem;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.3);
+            animation: aparecer 0.4s;
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        .mensaje.loading {
+            background: #CD853F;
+            color: #FDF5E6;
+            border-color: #E6B422;
+        }
+
+        .mensaje.success {
+            background: #2E8B57;
+            color: #FDF5E6;
+            border-color: #E6B422;
+        }
+
+        .mensaje.error {
+            background: #8B0000;
+            color: #FDF5E6;
+            border-color: #E6B422;
+        }
+
+        .mensaje.warning {
+            background: #CD853F;
+            color: #FDF5E6;
+            border-color: #E6B422;
+        }
+
+        .mensaje.hidden {
+            display: none;
+        }
+
+        .token-info {
+            font-size: 0.9rem;
+            margin-top: 10px;
+            color: #E6B422;
+            background: #5D3A1A;
+            padding: 8px;
+            border-radius: 20px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Overlay de redirección */
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.5s;
+        }
+
+        .redirect-card {
+            background: #D2B48C;
+            padding: 40px;
+            border-radius: 60px;
+            border: 8px solid #E6B422;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 20px 0 #5D3A1A;
+            animation: scaleIn 0.5s;
+        }
+
+        .redirect-card i {
+            font-size: 5rem;
+            color: #E6B422;
+            margin-bottom: 20px;
+        }
+
+        .redirect-card h2 {
+            color: #FDF5E6;
+            font-size: 2rem;
+            text-shadow: 3px 3px 0 #5D3A1A;
+            margin-bottom: 15px;
+        }
+
+        .redirect-card p {
+            color: #FDF5E6;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #5D3A1A;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #E6B422;
+            width: 0%;
+            transition: width 3s linear;
+            border-radius: 10px;
+        }
+
+        .footer-ranch {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            color: #E6B422;
+            font-size: 1.8rem;
+            background: #8B5A2B;
+            padding: 15px 10px;
+            border-radius: 40px;
+            border: 3px solid #E6B422;
+            margin-top: 15px;
+            box-shadow: inset 0 -4px 0 #5D3A1A;
+        }
+
+        .footer-ranch i {
+            filter: drop-shadow(0 3px 0 #3E2B1B);
+            transition: transform 0.2s;
+        }
+
+        .footer-ranch i:hover {
+            transform: scale(1.2);
+            color: #FFF0C0;
+        }
+
+        .lazo {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            font-size: 2.5rem;
+            color: #CD853F;
+            transform: rotate(15deg);
+            opacity: 0.6;
+        }
+
+        /* Tooltip para validaciones */
+        .validation-tooltip {
+            position: absolute;
+            bottom: -20px;
+            left: 20px;
+            background: #8B0000;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: none;
+            animation: slideIn 0.3s;
+            z-index: 10;
+        }
+
+        .validation-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #8B0000 transparent;
+        }
+
+        .validation-tooltip.show {
+            display: block;
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .input-error {
+            animation: shake 0.3s;
+            border-color: #8B0000 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="lazo"><i class="fas fa-ribbon"></i></div>
+            
+            <div class="header-rancho">
+                <h2> Loteria Mexicana <i class="fas fa-wheat-alt"></i></h2>
+                <p>REGISTRO PA' LOS CUATES</p>
+            </div>
+
+            <div class="form-rancho">
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                    <input type="text" class="rancho-input" id="username" placeholder="Nombre de usuario (sin @)" autocomplete="off" maxlength="20">
+                    <div class="validation-tooltip" id="usernameTooltip"></div>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" class="rancho-input" id="password" placeholder="Contraseña (mínimo 4 caracteres)">
+                    <div class="validation-tooltip" id="passwordTooltip"></div>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-key"></i></span>
+                    <div class="pin-row">
+                        <input type="password" class="rancho-input" id="pin" placeholder="PIN 4 dígitos" maxlength="4" style="flex:1;" inputmode="numeric">
+                        <div class="pin-icons">
+                            <i class="fas fa-cow"></i>
+                            <i class="fas fa-horse"></i>
+                            <i class="fas fa-feather"></i>
+                        </div>
+                    </div>
+                    <div class="validation-tooltip" id="pinTooltip"></div>
+                </div>
+
+                <button class="btn-rancho" id="registerBtn">
+                    <i class="fas fa-guitar"></i> ¡Jugar! <i class="fas fa-cactus"></i>
+                </button>
+
+                <!-- Contenedor de mensajes -->
+                <div class="mensaje-container">
+                    <div id="loadingMessage" class="mensaje loading hidden">
+                        <div class="spinner"></div> Guardando en el rancho... 
+                        <div class="spinner"></div>
+                    </div>
+
+                    <div id="successMessage" class="mensaje success hidden">
+                        <i class="fas fa-check-circle"></i> ¡AHÍ QUEDÓ, JEFE! 
+                        <i class="fas fa-check-circle"></i><br>
+                        <span style="font-size: 1.8rem;">
+                            <i class="fas fa-hat-cowboy"></i> BIENVENIDO 
+                            <i class="fas fa-hat-cowboy"></i>
+                        </span>
+                        <div id="tokenDisplay" class="token-info"></div>
+                        <div class="progress-bar" style="margin-top: 15px;">
+                            <div class="progress-fill" id="redirectProgress"></div>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Redirigiendo al rancho...</p>
+                    </div>
+
+                    <div id="errorMessage" class="mensaje error hidden">
+                        <i class="fas fa-exclamation-triangle"></i> ¡Algo salió mal, compa! 
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+
+                    <div id="warningMessage" class="mensaje warning hidden">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        <span id="warningText"></span>
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay de redirección -->
+    <div class="redirect-overlay" id="redirectOverlay">
+        <div class="redirect-card">
+            <i class="fas fa-horse"></i>
+            <h2>¡Arre, caballo!</h2>
+            <p>Nos vamos pal' rancho</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="overlayProgress"></div>
+            </div>
+            <p id="redirectCountdown" style="font-size: 2rem; color: #E6B422;">3</p>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // URLs de las APIs
+            const API_URL_USER = 'https://69a0d5e72e82ee536f9fa591.mockapi.io/Api/Loteria/pdaodpawjkpodkaowdkdoapwkdopajwidhiwahiowkqopko2qiei2qeo2qe2qe9i29qeo2qe2qieiiqceiq2r9uiejfuiwenvuiwhuf8w3ufu9iqi2q9i92fu9uiojeojfewihfiu3wuwefefewfefewfw3jf8j83wjfjuinweubcuihwh83u8uu90iidiq-U';
+            const API_URL_DATAUSER = 'https://69a0d5e72e82ee536f9fa591.mockapi.io/Api/Loteria/DataUser';
+
+            // Elementos del DOM
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            const pin = document.getElementById('pin');
+            const registerBtn = document.getElementById('registerBtn');
+            const loadingMsg = document.getElementById('loadingMessage');
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            const warningMsg = document.getElementById('warningMessage');
+            const warningText = document.getElementById('warningText');
+            const tokenDisplay = document.getElementById('tokenDisplay');
+            const redirectOverlay = document.getElementById('redirectOverlay');
+            const redirectProgress = document.getElementById('redirectProgress');
+            const overlayProgress = document.getElementById('overlayProgress');
+            const redirectCountdown = document.getElementById('redirectCountdown');
+
+            // Tooltips
+            const usernameTooltip = document.getElementById('usernameTooltip');
+            const passwordTooltip = document.getElementById('passwordTooltip');
+            const pinTooltip = document.getElementById('pinTooltip');
+
+            // Función para verificar si el usuario ya existe
+            function usuarioExiste(username) {
+                const usuarios = JSON.parse(localStorage.getItem('usuariosRancho')) || [];
+                return usuarios.some(u => u.user.toLowerCase() === username.toLowerCase());
+            }
+
+            // Función para verificar si el usuario contiene @
+            function tieneArroba(username) {
+                return username.includes('@');
+            }
+
+            // Función para validar campos en tiempo real
+            function validarCampoUsuario() {
+                const valor = username.value.trim();
+                
+                if (valor && tieneArroba(valor)) {
+                    username.classList.add('input-error');
+                    usernameTooltip.textContent = '¡No se permiten correos! Sin @';
+                    usernameTooltip.classList.add('show');
+                    return false;
+                } else if (valor && usuarioExiste(valor)) {
+                    username.classList.add('input-error');
+                    usernameTooltip.textContent = '¡Este nombre ya está ocupado, compa!';
+                    usernameTooltip.classList.add('show');
+                    return false;
+                } else if (valor) {
+                    username.classList.remove('input-error');
+                    usernameTooltip.classList.remove('show');
+                    return true;
+                }
+                return false;
+            }
+
+            function validarCampoPassword() {
+                const valor = password.value.trim();
+                
+                if (valor && valor.length < 4) {
+                    password.classList.add('input-error');
+                    passwordTooltip.textContent = 'Mínimo 4 caracteres';
+                    passwordTooltip.classList.add('show');
+                    return false;
+                } else if (valor) {
+                    password.classList.remove('input-error');
+                    passwordTooltip.classList.remove('show');
+                    return true;
+                }
+                return false;
+            }
+
+            function validarCampoPin() {
+                const valor = pin.value.trim();
+                
+                if (valor && !/^\d{4}$/.test(valor)) {
+                    pin.classList.add('input-error');
+                    pinTooltip.textContent = 'Solo 4 números';
+                    pinTooltip.classList.add('show');
+                    return false;
+                } else if (valor) {
+                    pin.classList.remove('input-error');
+                    pinTooltip.classList.remove('show');
+                    return true;
+                }
+                return false;
+            }
+
+            // Función para validar todos los campos antes de enviar
+            function validarTodo() {
+                const userVal = username.value.trim();
+                const passVal = password.value.trim();
+                const pinVal = pin.value.trim();
+
+                // Validar usuario
+                if (!userVal) {
+                    mostrarWarning('¡Falta el nombre, joven!');
+                    username.classList.add('input-error');
+                    return false;
+                }
+                if (tieneArroba(userVal)) {
+                    mostrarWarning('¡No se permiten correos! Sin @');
+                    username.classList.add('input-error');
+                    return false;
+                }
+                if (usuarioExiste(userVal)) {
+                    mostrarWarning('¡Este nombre ya está ocupado, compa!');
+                    username.classList.add('input-error');
+                    return false;
+                }
+
+                // Validar contraseña
+                if (!passVal) {
+                    mostrarWarning('¡Falta la contraseña!');
+                    password.classList.add('input-error');
+                    return false;
+                }
+                if (passVal.length < 4) {
+                    mostrarWarning('La contraseña debe tener mínimo 4 caracteres');
+                    password.classList.add('input-error');
+                    return false;
+                }
+
+                // Validar PIN
+                if (!pinVal) {
+                    mostrarWarning('¡Falta el PIN!');
+                    pin.classList.add('input-error');
+                    return false;
+                }
+                if (!/^\d{4}$/.test(pinVal)) {
+                    mostrarWarning('El PIN debe ser 4 números');
+                    pin.classList.add('input-error');
+                    return false;
+                }
+
+                return true;
+            }
+
+            // Función para mostrar mensajes de advertencia
+            function mostrarWarning(mensaje) {
+                warningText.textContent = mensaje;
+                warningMsg.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    warningMsg.classList.add('hidden');
+                }, 3000);
+            }
+
+            // Event listeners para validación en tiempo real
+            username.addEventListener('input', function() {
+                this.value = this.value.replace(/[^a-zA-Z0-9]/g, ''); // Solo letras y números
+                validarCampoUsuario();
+            });
+
+            username.addEventListener('blur', validarCampoUsuario);
+
+            password.addEventListener('input', validarCampoPassword);
+            password.addEventListener('blur', validarCampoPassword);
+
+            pin.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+                validarCampoPin();
+            });
+            pin.addEventListener('blur', validarCampoPin);
+
+            // Función para generar token único de 7 dígitos
+            function generarToken() {
+                return Math.floor(1000000 + Math.random() * 9000000).toString();
+            }
+
+            // Función para guardar en localStorage
+            function guardarEnLocalStorage(userData) {
+                try {
+                    const existingData = JSON.parse(localStorage.getItem('usuariosRancho')) || [];
+                    existingData.push(userData);
+                    localStorage.setItem('usuariosRancho', JSON.stringify(existingData));
+                    return true;
+                } catch (error) {
+                    console.error('Error guardando en localStorage:', error);
+                    return false;
+                }
+            }
+
+            // Función para enviar datos a la API de usuario y pin
+            async function guardarEnApiUser(userData) {
+                try {
+                    const response = await fetch(API_URL_USER, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user: userData.user,
+                            pin: userData.pin,
+                            token: userData.token,
+                            fechaRegistro: new Date().toISOString()
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error en API User:', error);
+                    throw error;
+                }
+            }
+
+            // Función para enviar datos a la API de DataUser
+            async function guardarEnApiDataUser(userData) {
+                try {
+                    const response = await fetch(API_URL_DATAUSER, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user: userData.user,
+                            password: userData.password,
+                            token: userData.token,
+                            fechaRegistro: new Date().toISOString()
+                        })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error en API DataUser:', error);
+                    throw error;
+                }
+            }
+
+            // Función para mostrar/ocultar mensajes
+            function mostrarMensaje(tipo, token = null) {
+                loadingMsg.classList.add('hidden');
+                errorMsg.classList.add('hidden');
+                successMsg.classList.add('hidden');
+                warningMsg.classList.add('hidden');
+                
+                if (tipo === 'loading') {
+                    loadingMsg.classList.remove('hidden');
+                    registerBtn.disabled = true;
+                } else if (tipo === 'success') {
+                    successMsg.classList.remove('hidden');
+                    registerBtn.disabled = false;
+                    if (token) {
+                        tokenDisplay.textContent = `Token: ${token}`;
+                    }
+                    setTimeout(() => {
+                        if (redirectProgress) {
+                            redirectProgress.style.width = '100%';
+                        }
+                    }, 100);
+                } else if (tipo === 'error') {
+                    errorMsg.classList.remove('hidden');
+                    registerBtn.disabled = false;
+                }
+            }
+
+            // Función para redirigir con overlay
+            function redirigirConEstilo() {
+                redirectOverlay.style.display = 'flex';
+                
+                let segundos = 3;
+                const intervalo = setInterval(() => {
+                    segundos--;
+                    if (redirectCountdown) {
+                        redirectCountdown.textContent = segundos;
+                    }
+                    
+                    const progreso = ((3 - segundos) / 3) * 100;
+                    if (overlayProgress) {
+                        overlayProgress.style.width = progreso + '%';
+                    }
+                    
+                    if (segundos <= 0) {
+                        clearInterval(intervalo);
+                        window.location.href = 'https://loteriamexicanaapp.forum2x2.ru/h5-sala';
+                    }
+                }, 1000);
+            }
+
+            // Evento registro
+            registerBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+
+                // Validar todo antes de continuar
+                if (!validarTodo()) {
+                    return;
+                }
+
+                const userVal = username.value.trim();
+                const passVal = password.value.trim();
+                const pinVal = pin.value.trim();
+
+                // Generar token único
+                const tokenGenerado = generarToken();
+
+                // Preparar datos del usuario
+                const userData = {
+                    user: userVal,
+                    password: passVal,
+                    pin: pinVal,
+                    token: tokenGenerado,
+                    fechaRegistro: new Date().toISOString()
+                };
+
+                // Mostrar loading
+                mostrarMensaje('loading');
+
+                try {
+                    // Guardar en localStorage
+                    guardarEnLocalStorage(userData);
+
+                    // Guardar en ambas APIs
+                    await Promise.allSettled([
+                        guardarEnApiUser(userData),
+                        guardarEnApiDataUser(userData)
+                    ]);
+
+                    // Mostrar éxito
+                    mostrarMensaje('success', tokenGenerado);
+
+                    // Redirigir después de 3 segundos
+                    setTimeout(() => {
+                        redirigirConEstilo();
+                    }, 3000);
+
+                } catch (error) {
+                    console.error('Error general:', error);
+                    mostrarMensaje('error');
+                }
+            });
+
+            // Mostrar datos guardados en consola
+            console.log('Usuarios en localStorage:', 
+                JSON.parse(localStorage.getItem('usuariosRancho')) || []);
+        })();
+    </script>
+</body>
+</html>
